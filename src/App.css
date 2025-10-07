@@ -130,3 +130,42 @@
 .notification-list::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+/* Gradient backgrounds for header (optional) */
+.bg-gradient-dark {
+  background: linear-gradient(145deg, #1b1f24, #2b3138);
+}
+.bg-gradient-light {
+  background: linear-gradient(145deg, #ffffff, #f2f4f8);
+}
+
+/* Hover effects */
+.hover-glow-light:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transition: all 0.25s ease;
+}
+.hover-glow-dark:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: all 0.25s ease;
+}
+.hover-glow-light:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transition: background 0.25s ease;
+}
+
+.hover-glow-dark:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background 0.25s ease;
+}
+
+.table th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.Toastify__toast {
+  animation: fadeDown 0.4s ease both;
+}
+
+@keyframes fadeDown {
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
