@@ -22,6 +22,8 @@ function App() {
   const [unreadAlerts, setUnreadAlerts] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [viewAllModal, setViewAllModal] = useState(false);
+const [selectedModule, setSelectedModule] = useState(null);
+const [showModuleCharts, setShowModuleCharts] = useState(false);
 
   // sensor pagination
   const [sensorPage, setSensorPage] = useState(1);
@@ -395,6 +397,77 @@ const activeAlertsCount = alerts.filter(
   </div>
 </div>
 
+{/* === 🧠 Sensor Visualization Section === */}
+<div className={`card border-0 shadow-lg rounded-4 mb-4 ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'}`}>
+  <div className="card-header d-flex justify-content-between align-items-center py-3 border-0">
+    <div className="d-flex align-items-center gap-2 fs-5 fw-semibold">
+      <i className="bi bi-eye text-primary"></i>
+      <span>Sensor Visualization</span>
+    </div>
+  </div>
+
+  <div className="card-body">
+    <div className="d-flex flex-wrap gap-3 justify-content-start">
+      {['DRILL001', 'MILL001', 'AIQS001'].map((module) => (
+        <button
+          key={module}
+          className={`btn btn-lg rounded-4 px-4 py-3 fw-semibold shadow-sm ${
+            darkMode ? 'btn-outline-light' : 'btn-outline-primary'
+          }`}
+          onClick={() => {
+            setSelectedModule(module);
+            setShowModuleCharts(true);
+          }}
+        >
+          {module}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
+{/* === 📊 Modal for Module Charts === */}
+{showModuleCharts && selectedModule && (
+  <div className="modal show d-block" tabIndex="-1" onClick={() => setShowModuleCharts(false)}>
+    <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" onClick={(e) => e.stopPropagation()}>
+      <div className={`modal-content ${darkMode ? 'bg-dark text-light' : ''}`}>
+        <div className="modal-header">
+          <h5 className="modal-title">Charts for {selectedModule}</h5>
+          <button type="button" className="btn-close" onClick={() => setShowModuleCharts(false)}></button>
+        </div>
+        <div className="modal-body">
+          <div className="row g-4">
+            {sensors
+              .filter(s => s.digitalModuleId === selectedModule)
+              .map((sensor, i) => {
+                const isPressure = sensor.name.toLowerCase().includes('pressure');
+                const iframeSrc = isPressure
+                  ? `http://localhost:3000/d-solo/null?orgId=1&from=1759946339088&to=1759946639088&timezone=browser&var-DigitalModule=${selectedModule}&var-Sensor=${sensor.sensorId}&theme=light&panelId=panel-3&__feature.dashboardSceneSolo=true`
+                  : `http://localhost:3000/d-solo/null?orgId=1&from=1759946339088&to=1759946639088&timezone=browser&var-DigitalModule=${selectedModule}&var-Sensor=${sensor.sensorId}&theme=light&panelId=panel-2&__feature.dashboardSceneSolo=true`;
+
+                return (
+                  <div key={i} className="col-12 col-md-6">
+                    <div className="card shadow-sm rounded-4 overflow-hidden border-0">
+                      <div className={`card-header fw-semibold ${darkMode ? 'bg-secondary text-light' : 'bg-light text-dark'}`}>
+                        {sensor.name}
+                      </div>
+                      <div className="ratio ratio-16x9">
+                        <iframe
+                          src={iframeSrc}
+                          title={`${sensor.name} Chart`}
+                          className="border-0"
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* ✅ Sensor Threshold Section */}
 <div className={`card border-0 shadow-lg rounded-4 mb-4 ${darkMode ? 'bg-dark text-light' : 'bg-light text-dark'}`}>
