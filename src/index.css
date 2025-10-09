@@ -1,90 +1,121 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* ==========================================
+🌟 MODERN SENSOR MODULES — CLICKABLE BUTTONS
+========================================== */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
+.modern-sensor-card {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  cursor: pointer; /* ✅ shows user it’s clickable */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
+  position: relative;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/* === Hover state: 3D lift & blue glow === */
+.modern-sensor-card:hover {
+  background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* === Active press-down === */
+.modern-sensor-card:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #e5e7eb, #f3f4f6);
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-/* Smooth hover highlight */
-.hover-glow-light:hover {
-  background-color: rgba(0, 123, 255, 0.05);
-  transition: background 0.3s ease;
-}
-.hover-glow-dark:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: background 0.3s ease;
+/* === Subtle glow ring === */
+.modern-sensor-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
 }
 
-/* Table header stickiness */
-.table thead th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
+.modern-sensor-card:hover::after {
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
 }
 
-/* Spinner alignment fix */
-.spinner-border {
-  width: 1.5rem;
-  height: 1.5rem;
+/* === Sensor Icon === */
+.sensor-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.25rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.modern-sensor-card:hover .sensor-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* === Text Styling === */
+.module-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.module-desc {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* === Pagination Text === */
+.pagination-controls {
+  padding-top: 10px;
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+/* ==========================================
+🌙 DARK MODE VARIANT
+========================================== */
+.dark .modern-sensor-card {
+  background: linear-gradient(145deg, #1f2937, #111827);
+  border: 1px solid #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark .modern-sensor-card:hover {
+  background: linear-gradient(145deg, #2d3748, #1e293b);
+  box-shadow: 0 8px 18px rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.dark .modern-sensor-card:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.dark .modern-sensor-card::after {
+  border-color: transparent;
+}
+
+.dark .modern-sensor-card:hover::after {
+  border-color: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.25);
+}
+
+.dark .module-title {
+  color: #f9fafb;
+}
+
+.dark .module-desc {
+  color: #9ca3af;
 }

@@ -1,171 +1,121 @@
-/* Beautiful Notification Bell Styles */
-.notification-bell {
-  background-color: #3b82f6;
-  color: white;
-  text-decoration: none;
-  padding: 12px 16px;
+/* ==========================================
+🌟 MODERN SENSOR MODULES — CLICKABLE BUTTONS
+========================================== */
+
+.modern-sensor-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: linear-gradient(145deg, #ffffff, #f9fafb);
+  cursor: pointer; /* ✅ shows user it’s clickable */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+}
+
+/* === Hover state: 3D lift & blue glow === */
+.modern-sensor-card:hover {
+  background: linear-gradient(145deg, #f3f4f6, #e5e7eb);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25);
+  transform: translateY(-3px) scale(1.02);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* === Active press-down === */
+.modern-sensor-card:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, #e5e7eb, #f3f4f6);
+}
+
+/* === Subtle glow ring === */
+.modern-sensor-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   border-radius: 12px;
+  border: 2px solid transparent;
   transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.notification-bell:hover {
-  background: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
+.modern-sensor-card:hover::after {
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
 }
 
-.notification-bell:active {
-  transform: translateY(0);
-}
-
-.bell-icon {
+/* === Sensor Icon === */
+.sensor-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.notification-badge {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  padding: 2px 6px;
-  border-radius: 9999px;
-  background: #ef4444;
   color: white;
-  font-size: 11px;
-  font-weight: bold;
-  min-width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid white;
-  animation: pulse 2s infinite;
+  font-size: 1.25rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Pulse animation for the badge */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-  }
-  50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
-  }
+.modern-sensor-card:hover .sensor-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px currentColor;
 }
 
-/* Notification Dropdown */
-.notification-dropdown {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  margin-top: 8px;
-  width: 400px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e5e7eb;
-  z-index: 50;
-  max-height: 80vh;
-  overflow: hidden;
-}
-
-.notification-header {
-  padding: 16px;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
-}
-
-.notification-list {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.notification-item {
-  padding: 16px;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s ease;
-}
-
-.notification-item:hover {
-  background-color: #f9fafb;
-}
-
-.notification-item:last-child {
-  border-bottom: none;
-}
-
-.empty-notifications {
-  padding: 48px 24px;
-  text-align: center;
-}
-
-/* Custom scrollbar for notification list */
-.notification-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.notification-list::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 3px;
-}
-
-.notification-list::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.notification-list::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-/* Gradient backgrounds for header (optional) */
-.bg-gradient-dark {
-  background: linear-gradient(145deg, #1b1f24, #2b3138);
-}
-.bg-gradient-light {
-  background: linear-gradient(145deg, #ffffff, #f2f4f8);
-}
-
-/* Hover effects */
-.hover-glow-light:hover {
-  background-color: rgba(13, 110, 253, 0.05);
-  transition: all 0.25s ease;
-}
-.hover-glow-dark:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: all 0.25s ease;
-}
-.hover-glow-light:hover {
-  background-color: rgba(13, 110, 253, 0.05);
-  transition: background 0.25s ease;
-}
-
-.hover-glow-dark:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  transition: background 0.25s ease;
-}
-
-.table th {
+/* === Text Styling === */
+.module-title {
+  font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
-}
-.Toastify__toast {
-  animation: fadeDown 0.4s ease both;
+  color: #111827;
 }
 
-@keyframes fadeDown {
-  0% { transform: translateY(-20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+.module-desc {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* === Pagination Text === */
+.pagination-controls {
+  padding-top: 10px;
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+/* ==========================================
+🌙 DARK MODE VARIANT
+========================================== */
+.dark .modern-sensor-card {
+  background: linear-gradient(145deg, #1f2937, #111827);
+  border: 1px solid #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark .modern-sensor-card:hover {
+  background: linear-gradient(145deg, #2d3748, #1e293b);
+  box-shadow: 0 8px 18px rgba(96, 165, 250, 0.25);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.dark .modern-sensor-card:active {
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.dark .modern-sensor-card::after {
+  border-color: transparent;
+}
+
+.dark .modern-sensor-card:hover::after {
+  border-color: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.25);
+}
+
+.dark .module-title {
+  color: #f9fafb;
+}
+
+.dark .module-desc {
+  color: #9ca3af;
 }
