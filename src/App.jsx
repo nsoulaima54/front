@@ -11,7 +11,8 @@ import {
 /**
  * ModuleChartsModal - standalone component that uses hooks correctly outside JSX
  */
-function ModuleChartsModal({ show, selectedModule, darkMode, onClose }) {
+function ModuleChartsModal({ show, selectedModule, darkMode, alertedSensors, onClose })
+{
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -69,19 +70,45 @@ function ModuleChartsModal({ show, selectedModule, darkMode, onClose }) {
             </div>
 
             <div className={`d-flex flex-wrap justify-content-${isTwoCharts ? 'center' : 'start'} gap-4`}>
-              {selectedCharts.map((url, index) => (
-                <div
-                  key={`${selectedModule}-chart-${index}-${refreshKey}`}
-                  className="card rounded-4 shadow-sm overflow-hidden border-0"
-                  style={{ width: isTwoCharts ? '45%' : '30%', minWidth: '350px' }}
-                >
-                  <div className={`card-header fw-semibold ${darkMode ? 'bg-secondary text-light' : 'bg-light text-dark'}`}>Chart {index + 1}</div>
-                  <div className="ratio ratio-16x9">
-                    <iframe src={`${url}&r=${refreshKey}`} frameBorder="0" title={`${selectedModule}-chart-${index}`} className="w-100 h-100"></iframe>
-                  </div>
-                </div>
-              ))}
-            </div>
+  {selectedCharts.map((url, index) => {
+    const alertBorder = Object.keys(alertedSensors).some(
+      (s) => alertedSensors[s] && url.includes(s)
+    )
+      ? '3px solid #dc3545'
+      : 'none';
+
+    return (
+      <div
+        key={`${selectedModule}-chart-${index}-${refreshKey}`}
+        className="card rounded-4 shadow-sm overflow-hidden border-0"
+        style={{
+          width: isTwoCharts ? '45%' : '30%',
+          minWidth: '350px',
+          border: alertBorder,
+          boxShadow: alertBorder !== 'none' ? '0 0 15px rgba(220,53,69,0.4)' : '',
+          transition: 'all 0.3s ease-in-out',
+        }}
+      >
+        <div
+          className={`card-header fw-semibold ${
+            darkMode ? 'bg-secondary text-light' : 'bg-light text-dark'
+          }`}
+        >
+          Chart {index + 1}
+        </div>
+        <div className="ratio ratio-16x9">
+          <iframe
+            src={`${url}&r=${refreshKey}`}
+            frameBorder="0"
+            title={`${selectedModule}-chart-${index}`}
+            className="w-100 h-100"
+          ></iframe>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
           </div>
         </div>
       </div>
@@ -107,7 +134,12 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [viewAllModal, setViewAllModal] = useState(false);
   const [selectedModule, setSelectedModule] = useState(null);
+  const [alertedModules, setAlertedModules] = useState({});
+const [alertedSensors, setAlertedSensors] = useState({});
   const [showModuleCharts, setShowModuleCharts] = useState(false);
+  // Track modules and sensors currently in alert state
+
+
 // --- Pagination for Sensors Visualization ---
 
 const itemsPerPage = 3;
@@ -151,12 +183,26 @@ const visibleModules = modules.slice(start, start + itemsPerPage);
 
         connectionRef.current = connection;
 
-        connection.on('ReceiveAlert', (alertData) => {
-          setAlerts((prev) => [alertData, ...prev]);
-          setUnreadAlerts((prev) => prev + 1);
-          showAlertToast(alertData);
-          if (!document.hasFocus()) showBrowserNotification(alertData);
-        });
+       connection.on('ReceiveAlert', (alertData) => {
+  setAlerts((prev) => [alertData, ...prev]);
+  setUnreadAlerts((prev) => prev + 1);
+  showAlertToast(alertData);
+  if (!document.hasFocus()) showBrowserNotification(alertData);
+
+  const { digitalModuleId, sensorId, status } = alertData;
+  if (digitalModuleId && sensorId) {
+    setAlertedModules(prev => ({
+      ...prev,
+      [digitalModuleId]: status.toLowerCase() === 'firing'
+    }));
+    setAlertedSensors(prev => ({
+      ...prev,
+      [sensorId]: status.toLowerCase() === 'firing'
+    }));
+  }
+});
+
+
 
         connection.onclose(() => {
           setIsConnected(false);
@@ -531,45 +577,61 @@ const visibleModules = modules.slice(start, start + itemsPerPage);
             {/* === Module List === */}
             <div className="d-flex flex-column gap-3">
               {visibleModules.map(({ id, sensors, desc, color, icon }) => (
-                <div
-                  key={id}
-                  className={`modern-sensor-card ${darkMode ? 'dark' : ''}`}
-                  style={{
-                    borderLeft: `5px solid ${color}`,
-                    background: darkMode
-                      ? 'linear-gradient(135deg, #1f2937, #111827)'
-                      : 'linear-gradient(135deg, #ffffff, #f8fafc)',
-                  }}
-                  onClick={() => {
-                    setSelectedModule(id);
-                    setShowModuleCharts(true);
-                  }}
-                >
-                  <div className="d-flex align-items-center gap-3 w-100">
-                    <div
-                      className="sensor-icon"
-                      style={{
-                        background: color,
-                        boxShadow: `0 3px 10px ${color}55`,
-                      }}
-                    >
-                      <i className={`bi ${icon}`}></i>
-                    </div>
+  <div
+    key={id}
+    className={`modern-sensor-card ${darkMode ? 'dark' : ''}`}
+    style={{
+      borderLeft: `5px solid ${color}`,
+      background: darkMode
+        ? 'linear-gradient(135deg, #1f2937, #111827)'
+        : 'linear-gradient(135deg, #ffffff, #f8fafc)',
+      position: 'relative',
+    }}
+    onClick={() => {
+      setSelectedModule(id);
+      setShowModuleCharts(true);
+    }}
+  >
+    {/* 🔔 Alert Badge Overlay if module has active alert */}
+    {alertedModules[id] && (
+      <span
+        className="position-absolute top-0 end-0 translate-middle badge rounded-circle bg-danger"
+        style={{
+          width: '20px',
+          height: '20px',
+          boxShadow: '0 0 8px rgba(220,53,69,0.7)',
+        }}
+        title="Alert active on this module"
+      >
+        ⚠
+      </span>
+    )}
 
-                    <div className="d-flex flex-column">
-                      <span className="fw-bold module-title">{id}</span>
-                      <span className="text-muted small module-desc">
-                        {desc} • {sensors} sensors
-                      </span>
-                    </div>
+    <div className="d-flex align-items-center gap-3 w-100">
+      <div
+        className="sensor-icon"
+        style={{
+          background: color,
+          boxShadow: `0 3px 10px ${color}55`,
+        }}
+      >
+        <i className={`bi ${icon}`}></i>
+      </div>
 
-                    <div className="ms-auto">
-                      <i className="bi bi-arrow-right-circle text-secondary fs-5"></i>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <div className="d-flex flex-column">
+        <span className="fw-bold module-title">{id}</span>
+        <span className="text-muted small module-desc">
+          {desc} &bull; {sensors} sensors
+        </span>
+      </div>
+
+      <div className="ms-auto">
+        <i className="bi bi-arrow-right-circle text-secondary fs-5"></i>
+      </div>
+    </div>
+  </div>
+))}
+            </div>  
 
             {/* === Pagination === */}
             <div className="pagination-controls d-flex justify-content-center align-items-center gap-3 mt-3">
@@ -856,7 +918,13 @@ const visibleModules = modules.slice(start, start + itemsPerPage);
           </div>
         )}
 
-        <ModuleChartsModal show={showModuleCharts} selectedModule={selectedModule} darkMode={darkMode} onClose={() => setShowModuleCharts(false)} />
+        <ModuleChartsModal
+  show={showModuleCharts}
+  selectedModule={selectedModule}
+  darkMode={darkMode}
+  alertedSensors={alertedSensors}
+  onClose={() => setShowModuleCharts(false)}
+/>
 
         <ToastContainer position="top-right" autoClose={5000} theme={darkMode ? "dark" : "light"} />
       </div>
